@@ -4,7 +4,23 @@ Author: Yuhuang Hu
 Email : yuhuang.hu@uzh.ch
 """
 
+import cv2
 import numpy as np
+from cv2 import bioinspired
+
+
+def init_retina(size):
+    """Initialize a retina by given parameters.
+
+    Parameters
+    ----------
+    size : tuple
+        The size of the retina receptive field (height, width)
+    """
+    if len(size) != 2:
+        raise ValueError("Invalid size setting.")
+
+    return bioinspired.createRetina((size[1], size[0]))
 
 
 def get_opl_frame(retina, frame, get_parvo=True, get_magno=True,
@@ -24,6 +40,8 @@ def get_opl_frame(retina, frame, get_parvo=True, get_magno=True,
     -------
     parvo_frame : numpy.ndarray
         a BGR colored parvo frame
+    magno_frame ; numpy.ndarray
+        a BGR colored magno frame
     """
     retina.run(frame)
 
@@ -59,4 +77,4 @@ def grey2color(frame):
     if frame.ndim != 2:
         raise ValueError("Input frame is not a grey frame.")
 
-    return np.repeat(frame, axis=2)
+    return np.transpose(np.tile(frame, (3, 1, 1)), (1, 2, 0))

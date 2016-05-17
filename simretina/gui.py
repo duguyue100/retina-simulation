@@ -4,6 +4,7 @@ Author: Yuhuang Hu
 Email : yuhuang.hu@uzh.ch
 """
 
+import cv2
 import numpy as np
 
 
@@ -29,4 +30,37 @@ def create_viewer_field(frames, inter_padding=20, border_padding=40,
     viewer_frame : numpy.ndarray
         A new frame that fit in viewer's size
     """
-    print len(frames)
+    viewer_frame = np.array([])
+
+    for frame in frames:
+        temp_frame = cv2.copyMakeBorder(frame, inter_padding, inter_padding,
+                                        inter_padding, inter_padding,
+                                        cv2.BORDER_CONSTANT, value=color)
+
+        if not viewer_frame.size:
+            viewer_frame = temp_frame
+        else:
+            viewer_frame = np.hstack((viewer_frame, temp_frame))
+
+    viewer_frame = cv2.copyMakeBorder(viewer_frame, inter_padding,
+                                      inter_padding, inter_padding,
+                                      inter_padding, cv2.BORDER_CONSTANT,
+                                      value=color)
+    return viewer_frame
+
+
+def get_viewer_frame(frame, viewer_size):
+    """Get viewer frame.
+
+    Parameters
+    ----------
+    frame : numpy.ndarray
+
+    viewer_size : tuple
+
+    Returns
+    -------
+    viewer_frame : numpy.ndarray
+    """
+    return cv2.resize(frame, (viewer_size[1], viewer_size[0]),
+                      interpolation=cv2.INTER_CUBIC)
