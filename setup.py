@@ -37,6 +37,7 @@ setup(
     url=about['__url__'],
 
     packages=['simretina'],
+    package_data={'simretina': ['retina-data/*.*']},
     scripts=[],
 
     classifiers=list(filter(None, classifiers.split('\n'))),
