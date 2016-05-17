@@ -8,9 +8,14 @@ This project is our final project to _Computer Simulation for Sensory Systems_.
 
 Detailed software setup can be found from [WIKI](https://github.com/duguyue100/retina-simulation/wiki/Software-Setup)
 
-## Updates
+## Todos
 
-+ :star: Update dataset module [WIKI](https://github.com/duguyue100/retina-simulation/wiki/simretina-Python-API) [2016-05-09]
+[x] Update dataset module [WIKI](https://github.com/duguyue100/retina-simulation/wiki/simretina-Python-API) [2016-05-09]
+[x] update basic processing functions on GUI and retina model [2016-05-17]
+[ ] First release of GUI by `PyQtGraph`
+[ ] Webcam support for the package
+[ ] `unittest`-based tests
+[ ] Travis-CI integration
 
 ## Requirements
 
