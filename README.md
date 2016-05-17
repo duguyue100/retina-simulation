@@ -1,6 +1,8 @@
 # Simulation of the Retina with OpenCV
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ffa7d1cf03e74bb2adfe60b91fb7479b)](https://www.codacy.com/app/duguyue100/retina-simulation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=duguyue100/retina-simulation&amp;utm_campaign=Badge_Grade)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](http://doge.mit-license.org)
+
 
 This project is our final project to _Computer Simulation for Sensory Systems_.
 
