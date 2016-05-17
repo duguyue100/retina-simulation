@@ -108,7 +108,7 @@ def get_opl_frames(retina, frames, get_parvo=True, get_magno=True,
     color_mode : string
         indicate color mode, the options are "color", "grey"
     """
-    if len(frames) == 0 or type(frames) != list:
+    if len(frames) == 0 or not isinstance(frames, list):
         raise ValueError("No video frame is entered")
 
     if reopen_eye is True:
