@@ -10,12 +10,12 @@ Detailed software setup can be found from [WIKI](https://github.com/duguyue100/r
 
 ## Todos
 
-[x] Update dataset module [WIKI](https://github.com/duguyue100/retina-simulation/wiki/simretina-Python-API) [2016-05-09]
-[x] update basic processing functions on GUI and retina model [2016-05-17]
-[ ] First release of GUI by `PyQtGraph`
-[ ] Webcam support for the package
-[ ] `unittest`-based tests
-[ ] Travis-CI integration
+- [x] Update dataset module [WIKI](https://github.com/duguyue100/retina-simulation/wiki/simretina-Python-API) [2016-05-09]
+- [x] update basic processing functions on GUI and retina model [2016-05-17]
+- [ ] First release of GUI by `PyQtGraph`
+- [ ] Webcam support for the package
+- [ ] `unittest`-based tests
+- [ ] Travis-CI integration
 
 ## Requirements
 
