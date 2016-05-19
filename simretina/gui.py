@@ -8,6 +8,116 @@ import cv2
 import numpy as np
 
 
+def cv2pg(frame, wg_h, wg_w, bgr=True, color=[255, 0, 0]):
+    """Convert a OpenCV frame to PyQtGraph frame.
+
+    Parameters
+    ----------
+    frame : numpy.ndarray
+        A OpenCV frame
+    wg_h : int
+        width of the frame widget
+    wg_w : int
+        height of the frame widget
+    bgr : bool
+        flag for indicating if the frame is in BGR panel.
+        Default is True (is BGR), False (is not BGR)
+    color : list
+        The background color of appended border
+    """
+    if frame.ndim < 3:
+        raise ValueError("Input is not a color image.")
+
+    if bgr is True:
+        frame = bgr2rgb(frame)
+
+    frame = fit_frame(frame, wg_h, wg_w, color)
+    frame = make_pg_frame(frame)
+
+    return frame
+
+
+def make_pg_frame(frame):
+    """Transpose frame to PyQtGraph frame.
+
+    Parameters
+    ----------
+    frame : numpy.ndarray
+        frame in OpenCV space.
+
+    Returns
+    -------
+    new_frame : numpy.ndarray
+        new frame in PyQtGraph frame space.
+    """
+    return np.transpose(frame, axes=(1, 0, 2))
+
+
+def fit_frame(frame, wg_h, wg_w, color=[255, 0, 0]):
+    """Fit to size of frame widget.
+
+    Parameters
+    ---------
+    frame : numpy.ndarray
+        given image or frame
+    wg_h : int
+        width of the frame widget
+    wg_w : int
+        height of the frame widget
+    color : list
+        The background color of appended border
+
+    Returns
+    -------
+    new_frame : numpy.ndarray
+        fit frame
+    """
+    # new_frame = frame.copy()
+    # try to save memory
+    new_frame = frame
+    frame_h = frame.shape[0]
+    frame_w = frame.shape[1]
+    # if the ratio is different, then append border
+    if (float(wg_h)/float(wg_w)) != (float(frame_h)/float(frame_w)):
+        # do something
+        if (float(frame_h)/float(frame_w)) > (float(wg_h)/float(wg_w)):
+            w_append = int((frame_h*wg_w-wg_h*frame_w)/wg_h)
+            new_frame = cv2.copyMakeBorder(src=new_frame, top=0, bottom=0,
+                                           left=w_append/2, right=w_append/2,
+                                           borderType=cv2.BORDER_CONSTANT,
+                                           value=color)
+
+        elif (float(frame_h)/float(frame_w)) < (float(wg_h)/float(wg_w)):
+            h_append = int((wg_h*frame_w-frame_h*wg_w)/wg_w)
+            new_frame = cv2.copyMakeBorder(src=new_frame, top=h_append/2,
+                                           bottom=h_append/2, left=0, right=0,
+                                           borderType=cv2.BORDER_CONSTANT,
+                                           value=color)
+
+    new_frame = cv2.resize(new_frame, (wg_w, wg_h),
+                           interpolation=cv2.INTER_AREA)
+
+    return new_frame
+
+
+def resize(frame, new_size):
+    """Wrap OpenCV frame resize function.
+
+    Parameters
+    ----------
+    frame : numpy.ndarray
+        a given frame
+    new_size : tuple
+        new size in tuple: (width, height)
+
+    Returns
+    -------
+    new_frame : numpy.ndarray
+        resized frame
+    """
+    return cv2.resize(frame, new_size, interpolation=cv2.INTER_CUBIC)
+
+
 def bgr2rgb(frame):
     """Convert color span from BGR to RGB.
 
@@ -96,3 +206,46 @@ def get_viewer_frame(frame, viewer_size):
     """
     return cv2.resize(frame, (viewer_size[1], viewer_size[0]),
                       interpolation=cv2.INTER_CUBIC)
+
+
+# GUI response functions
+def ipl_no_state(button):
+    """State response of IPL output normalization.
+
+    Parameters
+    ----------
+    button : QtGui.QRadioButton
+        the button state
+
+    Returns
+    -------
+    response : bool
+        True (if Yes selected), False (if No selected)
+    """
+    if button.text() == "Yes":
+        if button.isChecked():
+            return True
+    elif button.text() == "No":
+        if button.isChecked():
+            return False
+
+
+def opl_no_state(button):
+    """State response of OPL output normalization.
+
+    Parameters
+    ----------
+    button : QtGui.QRadioButton
+        the button state
+
+    Returns
+    -------
+    response : bool
+        True (if Yes selected), False (if No selected)
+    """
+    if button.text() == "Yes":
+        if button.isChecked():
+            return True
+    elif button.text() == "No":
+        if button.isChecked():
+            return False
