@@ -4,6 +4,7 @@ Author: Yuhuang Hu
 Email : yuhuang.hu@uzh.ch
 """
 
+import sys
 import cv2
 import numpy as np
 
@@ -249,3 +250,21 @@ def m_no_state(button):
     elif button.text() == "No":
         if button.isChecked():
             return False
+
+
+def exit_wg_state(button, app):
+    """Define exit button.
+
+    Parameters
+    ----------
+    button : QtGui.QPushButton
+        the exit button
+    app : QtGui.QApplication
+        the main QtGui application
+
+    Returns
+    -------
+    exit the program
+    """
+    if button.isChecked():
+        sys.exit(app.exec_())

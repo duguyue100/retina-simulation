@@ -33,11 +33,6 @@ viewer_window.setFixedSize(win_width, win_height)
 viewer_layout = QtGui.QGridLayout()
 viewer_window.setLayout(viewer_layout)
 
-# define widgets
-
-# file dialog
-file_chooser = FileDialog()
-
 # Frame widgets
 frame_wg = QtGui.QWidget()
 frame_layout = QtGui.QHBoxLayout()
@@ -286,10 +281,47 @@ MAGNO_layout.addRow(m_vcp_label, m_vcp_layout)
 MAGNO_layout.addRow(m_lait_label, m_lait_wg)
 MAGNO_layout.addRow(m_laik_label, m_laik_wg)
 
+# Utility widgets
+UTIL_wg = QtGui.QWidget()
+UTIL_layout = QtGui.QGridLayout()
+UTIL_layout.setAlignment(QtCore.Qt.AlignTop)
+UTIL_wg.setLayout(UTIL_layout)
+
+# Exit button
+exit_wg = QtGui.QPushButton("Exit")
+exit_wg.setFixedSize(150, 30)
+exit_wg.setCheckable(True)
+exit_wg.clicked.connect(lambda: gui.exit_wg_state(exit_wg, viewer_app))
+
+# File chooser
+file_button = QtGui.QPushButton("Open Image/Video")
+file_button.setFixedSize(150, 30)
+file_button.setCheckable(True)
+file_chooser = FileDialog()
+file_name = ""
+
+
+def select_file():
+    """select file."""
+    global file_name
+    file_name = file_chooser.getOpenFileName()
+file_button.clicked.connect(select_file)
+
+# Utitlity Layout
+
+UTIL_layout.addWidget(file_button, 0, 0)
+UTIL_layout.addWidget(exit_wg, 1, 0)
+
 # set layout
-viewer_layout.addWidget(frame_wg, 0, 0, 2, 0)
-viewer_layout.addWidget(PARVO_wg, 1, 0)
-viewer_layout.addWidget(MAGNO_wg, 1, 1)
+manual_wg = QtGui.QWidget()
+manual_layout = QtGui.QHBoxLayout()
+manual_wg.setLayout(manual_layout)
+manual_layout.addWidget(PARVO_wg)
+manual_layout.addWidget(MAGNO_wg)
+manual_layout.addWidget(UTIL_wg)
+
+viewer_layout.addWidget(frame_wg, 0, 0)
+viewer_layout.addWidget(manual_wg, 1, 0)
 
 # Execute the viewer
 viewer_window.show()
