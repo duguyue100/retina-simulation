@@ -9,7 +9,7 @@ from pyqtgraph.widgets.RawImageWidget import RawImageWidget
 from pyqtgraph.widgets.FileDialog import FileDialog
 from pyqtgraph.widgets.ComboBox import ComboBox
 
-from simretina import dataset, gui
+from simretina import dataset, gui, retina
 
 # global parameters
 win_width = 1280
@@ -322,6 +322,27 @@ manual_layout.addWidget(UTIL_wg)
 
 viewer_layout.addWidget(frame_wg, 0, 0)
 viewer_layout.addWidget(manual_wg, 1, 0)
+
+# setup retina
+eye = retina.init_retina((frame_wid, frame_height))
+retina.clear_buffers(eye)
+
+# TODO: make parameter collection
+# TODO: compare difference of the collection while refreshing
+
+
+def update():
+    """Update viewer status."""
+    parvo_frame, magno_frame = retina.get_opl_frame(eye, lenna)
+    draw_frame.setImage(lenna)
+    draw_parvo.setImage(parvo_frame)
+    draw_magno.setImage(magno_frame)
+    viewer_app.processEvents()
+
+
+timer = QtCore.QTimer()
+timer.timeout.connect(update)
+timer.start(0)
 
 # Execute the viewer
 viewer_window.show()
