@@ -209,8 +209,8 @@ def get_viewer_frame(frame, viewer_size):
 
 
 # GUI response functions
-def ipl_no_state(button):
-    """State response of IPL output normalization.
+def p_no_state(button):
+    """State response of IPL and OPL Parvo output normalization.
 
     Parameters
     ----------
@@ -230,8 +230,8 @@ def ipl_no_state(button):
             return False
 
 
-def opl_no_state(button):
-    """State response of OPL output normalization.
+def m_no_state(button):
+    """State response of IPL Magno output normalization.
 
     Parameters
     ----------
