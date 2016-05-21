@@ -224,8 +224,8 @@ def get_viewer_frame(frame, viewer_size):
 
 
 # GUI response functions
-def p_no_state(button):
-    """State response of IPL and OPL Parvo output normalization.
+def radio_state(button):
+    """Radio state.
 
     Parameters
     ----------
@@ -237,33 +237,10 @@ def p_no_state(button):
     response : bool
         True (if Yes selected), False (if No selected)
     """
-    if button.text() == "Yes":
-        if button.isChecked():
-            return True
-    elif button.text() == "No":
-        if button.isChecked():
-            return False
-
-
-def m_no_state(button):
-    """State response of IPL Magno output normalization.
-
-    Parameters
-    ----------
-    button : QtGui.QRadioButton
-        the button state
-
-    Returns
-    -------
-    response : bool
-        True (if Yes selected), False (if No selected)
-    """
-    if button.text() == "Yes":
-        if button.isChecked():
-            return True
-    elif button.text() == "No":
-        if button.isChecked():
-            return False
+    if button.isChecked():
+        return True
+    else:
+        return False
 
 
 def exit_wg_state(button, app):
@@ -282,3 +259,71 @@ def exit_wg_state(button, app):
     """
     if button.isChecked():
         sys.exit(app.exec_())
+
+
+def color_mode_option(cm_wg):
+    """Color mode option.
+
+    Parameters
+    ----------
+    cm_wg : pyqtgraph.widgets.ComboBox
+        ComboBox of color mode
+
+    Returns
+    -------
+    cm_status : bool
+        True if color, False if gray
+    """
+    if cm_wg.currentText() == "Color":
+        return True
+    elif cm_wg.currentText() == "Gray":
+        return False
+
+
+def no_state(no_yes, no_no):
+    """Normalize output state.
+
+    Parameters
+    ----------
+    no_yes : QtGui.QRadioButton
+        Yes button of normalization output
+    no_no : QtGui.QRadioButton
+        NO button of normalization output
+
+    Returns
+    -------
+    no_state : bool
+        True if "Yes", False if "No"
+    """
+    no_yes_state = radio_state(no_yes)
+    no_no_state = radio_state(no_no)
+
+    if no_yes_state is True and no_no_state is False:
+        return True
+    elif no_yes_state is False and no_no_state is True:
+        return False
+    else:
+        return False
+
+
+def line_edit_val(le_wg, default_val):
+    """Get QLineEdit field value.
+
+    Parameters
+    ----------
+    le_wg : QtGui.QLineEdit
+        QtGui.QLineEdit widget
+    default_val : float
+        Default value of the widget
+
+    Returns
+    -------
+    le_val : float
+        the value in the widget
+    """
+    le_val = le_wg.text()
+
+    try:
+        return float(le_val)
+    except ValueError:
+        return default_val

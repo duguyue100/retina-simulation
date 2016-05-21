@@ -285,3 +285,40 @@ def compare_para_dict(para_dict_old, para_dict_new):
         return True
     else:
         return False
+
+
+def apply_para_dict(retina, para_dict):
+    """Applay parameter dictionary on a given retina model.
+
+    Parameters
+    ----------
+    retina : cv2.bioinspired_Retina
+        the retina model
+    para_dict : dictionary
+        a given retina dicionary
+
+    Returns
+    -------
+    retina : cv2.bioinspired_Retina
+        An updated retina model
+    """
+    retina.setupIPLMagnoChannel(
+        para_dict["normalise_output_magno"],
+        para_dict["parasol_cells_beta"],
+        para_dict["parasol_cells_tau"],
+        para_dict["parasol_cells_k"],
+        para_dict["amacrin_cells_temporal_cut_frequency"],
+        para_dict["v0_compression_parameter"],
+        para_dict["local_adapt_integration_tau"],
+        para_dict["local_adapt_integration_k"])
+
+    retina.setupOPLandIPLParvoChannel(
+        para_dict["color_mode"],
+        para_dict["normalise_output_parvo"],
+        para_dict["photoreceptors_local_adaptation_sensitivity"],
+        para_dict["photoreceptors_temporal_constant"],
+        para_dict["photoreceptors_spatial_constant"],
+        para_dict["horizontal_cells_gain"],
+        para_dict["hcells_temporal_constant"],
+        para_dict["hcells_spatial_constant"],
+        para_dict["ganglion_cells_sensitivity"])

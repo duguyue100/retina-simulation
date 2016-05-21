@@ -21,7 +21,7 @@ frame_height = 300
 # example image
 
 lenna, size = dataset.get_lenna()
-lenna = gui.cv2pg(lenna, frame_height, frame_wid)
+lenna = gui.resize(lenna, (frame_wid, frame_height), ratio_keep=True)
 
 # init viewer application
 viewer_app = QtGui.QApplication([])
@@ -58,7 +58,6 @@ PARVO_layout.setLabelAlignment(QtCore.Qt.AlignLeft)
 PARVO_wg.setLayout(PARVO_layout)
 
 # PARVO color mode
-# TODO: figure out  why the list is not displayed completely
 cm_label = QtGui.QLabel("Color Mode:")
 cm_wg = ComboBox(items=["Color", "Gray"], default="Color")
 cm_wg.setFixedSize(150, 30)
@@ -68,10 +67,8 @@ p_no_layout = QtGui.QHBoxLayout()
 p_no_label = QtGui.QLabel("Norm. PARVO Out:")
 p_no_yes = QtGui.QRadioButton("Yes")
 p_no_yes.setChecked(True)
-p_no_yes.toggled.connect(lambda: gui.p_no_state(pl_no_yes))
 p_no_no = QtGui.QRadioButton("No")
 p_no_no.setChecked(False)
-p_no_yes.toggled.connect(lambda: gui.p_no_state(p_no_no))
 p_no_layout.addWidget(p_no_yes)
 p_no_layout.addWidget(p_no_no)
 p_no_layout.addStretch()
@@ -200,10 +197,8 @@ m_no_layout = QtGui.QHBoxLayout()
 m_no_label = QtGui.QLabel("Norm. OPL Out:")
 m_no_yes = QtGui.QRadioButton("Yes")
 m_no_yes.setChecked(True)
-m_no_yes.toggled.connect(lambda: gui.m_no_state(m_no_yes))
 m_no_no = QtGui.QRadioButton("No")
 m_no_no.setChecked(False)
-m_no_yes.toggled.connect(lambda: gui.m_no_state(m_no_no))
 m_no_layout.addWidget(m_no_yes)
 m_no_layout.addWidget(m_no_no)
 m_no_layout.addStretch()
@@ -324,7 +319,50 @@ viewer_layout.addWidget(frame_wg, 0, 0)
 viewer_layout.addWidget(manual_wg, 1, 0)
 
 # setup retina
-eye = retina.init_retina((frame_wid, frame_height))
+eye = retina.init_retina(lenna.shape[:2])
+
+# get parameter collection
+
+cm_state = gui.color_mode_option(cm_wg)
+p_no_state = gui.no_state(p_no_yes, p_no_no)
+p_plas_wg_val = p_plas_wg.value()/100.
+p_ptc_wg_val = gui.line_edit_val(p_ptc_wg, 0.9)
+p_psc_wg_val = gui.line_edit_val(p_psc_wg, 0.53)
+p_hcg_wg_val = p_hcg_wg.value()/100.
+p_htc_wg_val = gui.line_edit_val(p_htc_wg, 0.5)
+p_hsc_wg_val = gui.line_edit_val(p_hsc_wg, 7.)
+p_gcs_wg_val = p_gcs_wg.value()/100.
+
+m_no_state = gui.no_state(m_no_yes, m_no_no)
+m_pcb_wg_val = gui.line_edit_val(m_pcb_wg, 0.)
+m_pct_wg_val = gui.line_edit_val(m_pct_wg, 0.)
+m_pck_wg_val = gui.line_edit_val(m_pck_wg, 7.)
+m_actcf_wg_val = gui.line_edit_val(m_actcf_wg, 2.)
+m_vcp_wg_val = m_vcp_wg.value()/100.
+m_lait_wg_val = gui.line_edit_val(m_lait_wg, 0.)
+m_laik_wg_val = gui.line_edit_val(m_laik_wg, 7.)
+
+eye_para_dict = retina.create_para_dict(
+                    color_mode=cm_state,
+                    normalise_output_parvo=p_no_state,
+                    photoreceptors_local_adaptation_sensitivity=p_plas_wg_val,
+                    photoreceptors_temporal_constant=p_ptc_wg_val,
+                    photoreceptors_spatial_constant=p_psc_wg_val,
+                    horizontal_cells_gain=p_hcg_wg_val,
+                    hcells_temporal_constant=p_htc_wg_val,
+                    hcells_spatial_constant=p_hsc_wg_val,
+                    ganglion_cells_sensitivity=p_gcs_wg_val,
+                    normalise_output_magno=m_no_state,
+                    parasol_cells_beta=m_pcb_wg_val,
+                    parasol_cells_tau=m_pct_wg_val,
+                    parasol_cells_k=m_pck_wg_val,
+                    amacrin_cells_temporal_cut_frequency=m_actcf_wg_val,
+                    v0_compression_parameter=m_vcp_wg_val,
+                    local_adapt_integration_tau=m_lait_wg_val,
+                    local_adapt_integration_k=m_laik_wg_val)
+
+eye_para_dict_old = eye_para_dict
+retina.apply_para_dict(eye, eye_para_dict)
 retina.clear_buffers(eye)
 
 # TODO: make parameter collection
@@ -333,8 +371,57 @@ retina.clear_buffers(eye)
 
 def update():
     """Update viewer status."""
+    global eye_para_dict_old, eye_para_dict
+    # capture current states
+    cm_state = gui.color_mode_option(cm_wg)
+    p_no_state = gui.no_state(p_no_yes, p_no_no)
+    p_plas_wg_val = p_plas_wg.value()/100.
+    p_ptc_wg_val = gui.line_edit_val(p_ptc_wg, 0.9)
+    p_psc_wg_val = gui.line_edit_val(p_psc_wg, 0.53)
+    p_hcg_wg_val = p_hcg_wg.value()/100.
+    p_htc_wg_val = gui.line_edit_val(p_htc_wg, 0.5)
+    p_hsc_wg_val = gui.line_edit_val(p_hsc_wg, 7.)
+    p_gcs_wg_val = p_gcs_wg.value()/100.
+
+    m_no_state = gui.no_state(m_no_yes, m_no_no)
+    m_pcb_wg_val = gui.line_edit_val(m_pcb_wg, 0.)
+    m_pct_wg_val = gui.line_edit_val(m_pct_wg, 0.)
+    m_pck_wg_val = gui.line_edit_val(m_pck_wg, 7.)
+    m_actcf_wg_val = gui.line_edit_val(m_actcf_wg, 2.)
+    m_vcp_wg_val = m_vcp_wg.value()/100.
+    m_lait_wg_val = gui.line_edit_val(m_lait_wg, 0.)
+    m_laik_wg_val = gui.line_edit_val(m_laik_wg, 7.)
+
+    # setup current paramete dictionary
+    eye_para_dict = retina.create_para_dict(
+                     color_mode=cm_state,
+                     normalise_output_parvo=p_no_state,
+                     photoreceptors_local_adaptation_sensitivity=p_plas_wg_val,
+                     photoreceptors_temporal_constant=p_ptc_wg_val,
+                     photoreceptors_spatial_constant=p_psc_wg_val,
+                     horizontal_cells_gain=p_hcg_wg_val,
+                     hcells_temporal_constant=p_htc_wg_val,
+                     hcells_spatial_constant=p_hsc_wg_val,
+                     ganglion_cells_sensitivity=p_gcs_wg_val,
+                     normalise_output_magno=m_no_state,
+                     parasol_cells_beta=m_pcb_wg_val,
+                     parasol_cells_tau=m_pct_wg_val,
+                     parasol_cells_k=m_pck_wg_val,
+                     amacrin_cells_temporal_cut_frequency=m_actcf_wg_val,
+                     v0_compression_parameter=m_vcp_wg_val,
+                     local_adapt_integration_tau=m_lait_wg_val,
+                     local_adapt_integration_k=m_laik_wg_val)
+
+    if not retina.compare_para_dict(eye_para_dict_old, eye_para_dict):
+        eye_para_dict_old = eye_para_dict
+        retina.apply_para_dict(eye, eye_para_dict)
+        retina.clear_buffers(eye)
+
     parvo_frame, magno_frame = retina.get_opl_frame(eye, lenna)
-    draw_frame.setImage(lenna)
+    lenna_frame = gui.cv2pg(lenna, frame_height, frame_wid)
+    parvo_frame = gui.cv2pg(parvo_frame, frame_height, frame_wid)
+    magno_frame = gui.cv2pg(magno_frame, frame_height, frame_wid)
+    draw_frame.setImage(lenna_frame)
     draw_parvo.setImage(parvo_frame)
     draw_magno.setImage(magno_frame)
     viewer_app.processEvents()

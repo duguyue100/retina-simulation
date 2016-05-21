@@ -8,7 +8,7 @@ import cv2
 
 from simretina import dataset, gui, retina
 
-option = "test-dict-compare"
+option = "test-setup-function"
 
 if option == "test-builtin-image":
     # testing for builtin dataset
@@ -48,3 +48,9 @@ if option == "test-dict-compare":
     para_dict_new["b"] = 2
 
     print retina.compare_para_dict(para_dict_old, para_dict_new)
+
+if option == "test-setup-function":
+    eye = retina.init_retina((300, 300))
+
+    print type(eye.setupOPLandIPLParvoChannel)
+    print type(eye.setupIPLMagnoChannel)
