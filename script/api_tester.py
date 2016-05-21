@@ -5,11 +5,10 @@ Email : yuhuang.hu@uzh.ch
 """
 
 import cv2
-from cv2 import bioinspired
 
-from simretina import dataset, gui
+from simretina import dataset, gui, retina
 
-option = "test-ratio-keep-resize"
+option = "test-dict-compare"
 
 if option == "test-builtin-image":
     # testing for builtin dataset
@@ -22,11 +21,6 @@ if option == "test-builtin-video":
     frames, size_v = dataset.get_taichi()
     print len(frames)
     print size_v
-
-if option == "test-retina-class":
-    frame, size = dataset.get_lenna()
-    retina = bioinspired.createRetina(size[:2])
-    print type(retina)
 
 if option == "test-bgr2rgb-sequence":
     frames, size = dataset.get_horse_riding()
@@ -43,3 +37,14 @@ if option == "test-ratio-keep-resize":
     frame, size = dataset.get_lenna()
     frame = gui.resize(frame, (400, 300), ratio_keep=True)
     print frame.shape
+
+if option == "test-dict-compare":
+    para_dict_old = {}
+    para_dict_old["a"] = 1
+    para_dict_old["b"] = 2
+
+    para_dict_new = {}
+    para_dict_new["a"] = 1
+    para_dict_new["b"] = 2
+
+    print retina.compare_para_dict(para_dict_old, para_dict_new)
