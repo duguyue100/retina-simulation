@@ -25,6 +25,7 @@ unnecessary messes.__
 + OpenCV3: `conda install -c menpo opencv3=3.1.0` (for image and video processing)
 + FFMPEG: `conda install -c soft-matter ffmpeg=2.2.4` (for supporting video analysis)
 + PyAV: `conda install -c soft-matter pyav=v0.2.3.post0` (for reading videos)
++ PyQtGraph: `conda install pyqtgraph` (for GUI viewer)
 
 Note that above requirements are installed with `conda` - the package management system
 provided along with `Anaconda`. Make sure you installed them before installing the package
