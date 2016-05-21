@@ -1,5 +1,6 @@
 # Simulation of the Retina with OpenCV
 
+[![Build Status](https://travis-ci.org/duguyue100/retina-simulation.svg?branch=master)](https://travis-ci.org/duguyue100/retina-simulation)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ffa7d1cf03e74bb2adfe60b91fb7479b)](https://www.codacy.com/app/duguyue100/retina-simulation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=duguyue100/retina-simulation&amp;utm_campaign=Badge_Grade)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](http://doge.mit-license.org)
 
@@ -18,7 +19,7 @@ Detailed software setup can be found from [WIKI](https://github.com/duguyue100/r
 - [x] External file support [2016-05-21]
 - [ ] Redesign GUI to add fast tone transformation
 - [ ] `unittest`-based tests
-- [ ] Travis-CI integration
+- [x] Travis-CI integration [2016-05-21]
 
 ## Requirements
 
