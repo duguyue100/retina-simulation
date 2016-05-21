@@ -12,8 +12,9 @@ Detailed software setup can be found from [WIKI](https://github.com/duguyue100/r
 
 - [x] Update dataset module [WIKI](https://github.com/duguyue100/retina-simulation/wiki/simretina-Python-API) [2016-05-09]
 - [x] update basic processing functions on GUI and retina model [2016-05-17]
-- [x] First release of GUI by `PyQtGraph`
-- [x] Webcam support for the package
+- [x] First release of GUI by `PyQtGraph` [2016-05-21]
+- [x] Webcam support for the package [2016-05-21]
+- [x] Command line support for viewer [2016-05-21]
 - [ ] External file support
 - [ ] `unittest`-based tests
 - [ ] Travis-CI integration
@@ -40,6 +41,21 @@ Get the bleeding edge by:
 ```
 pip install git+git://github.com/duguyue100/retina-simulation.git
 ```
+
+## Start Retina Simulation Viewer
+
+__Caution: This feature may not work with Windows platform where the
+path feature is not defined in `/usr/bin/env` as *nix platforms.__
+
+After you successfully installed the package, you are able to start the
+retina viewer from terminal:
+
+```
+retina_viewer.py
+```
+
+Note that above file is automatically added in your system path once
+you installed the package.
 
 ## Contacts
 
