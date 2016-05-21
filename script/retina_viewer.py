@@ -20,7 +20,7 @@ win_height = 800
 frame_wid = 400
 frame_height = 300
 
-# example image
+# background image
 bg_frame = gui.get_background_frame((frame_wid, frame_height))
 bg_frame = bg_frame.astype("uint8")
 frame = bg_frame.copy()
@@ -288,8 +288,7 @@ UTIL_layout.setFormAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 UTIL_layout.setLabelAlignment(QtCore.Qt.AlignLeft)
 UTIL_wg.setLayout(UTIL_layout)
 
-# Display mode: image, video, webcam
-
+# Display mode: image, video, webcam, external image, external video
 dis_label = QtGui.QLabel("Operation Mode:")
 dis_wg = ComboBox(items=["Image", "Image (External)", "Video",
                          "Video (External)", "Webcam"], default="Image")
@@ -303,7 +302,6 @@ exp_wg = ComboBox(items=["None", "Lenna (Image)", "Dog (Image)",
                   default="None")
 exp_wg.setFixedSize(200, 30)
 exp_wg_prev = exp_wg.currentText()
-
 
 # Exit button
 exit_wg = QtGui.QPushButton("Exit")
@@ -329,7 +327,6 @@ def select_file():
 file_button.clicked.connect(select_file)
 
 # Utitlity Layout
-
 UTIL_layout.addRow(dis_label, dis_wg)
 UTIL_layout.addRow(exp_label, exp_wg)
 UTIL_layout.addRow(file_button, exit_wg)
@@ -349,7 +346,6 @@ viewer_layout.addWidget(manual_wg, 1, 0)
 eye = retina.init_retina(bg_frame.shape[:2])
 
 # get parameter collection
-
 cm_state = gui.color_mode_option(cm_wg)
 p_no_state = gui.no_state(p_no_yes, p_no_no)
 p_plas_wg_val = p_plas_wg.value()/100.
@@ -462,7 +458,6 @@ def update():
                 elif exp_wg_curr == "Dog (Image)":
                     frame = dataset.get_dog(size=False)
 
-                # redefine eye
                 frame = gui.resize(frame, (frame_wid, frame_height),
                                    ratio_keep=True)
                 eye = retina.init_retina(frame.shape[:2])
@@ -470,7 +465,8 @@ def update():
                 retina.clear_buffers(eye)
             exp_wg_prev = exp_wg_curr
         elif exp_wg_curr == exp_wg_prev:
-            if exp_wg_curr == "None":
+            if exp_wg_curr in ["None", "Horse Riding (Video)",
+                               "TaiChi (Video)"]:
                 frame = bg_frame
     elif dis_wg.currentText() == "Video":
         if vid_stream is not None:
@@ -482,8 +478,9 @@ def update():
                 t_frames = dataset.get_horse_riding(size=False)
             elif exp_wg_curr == "TaiChi (Video)":
                 t_frames = dataset.get_taichi(size=False)
+            else:
+                t_frames = [bg_frame]
 
-            # redefine eye
             frames = []
             for frame in t_frames:
                 frames.append(gui.resize(frame, (frame_wid, frame_height),
@@ -496,7 +493,7 @@ def update():
             frame_len = len(frames)
             exp_wg_prev = exp_wg_curr
         elif exp_wg_curr == exp_wg_prev:
-            if exp_wg_curr == "None":
+            if exp_wg_curr in ["None", "Lenna (Image)", "Dog (Image)"]:
                 frame = bg_frame
             else:
                 frame = frames[frame_idx]
@@ -504,6 +501,7 @@ def update():
                 if frame_idx == (frame_len-1):
                     frame_idx = 0
     elif dis_wg.currentText() == "Webcam":
+        exp_wg.setCurrentIndex(0)
         if vid_stream is None:
             vid_stream = cv2.VideoCapture(0)
         _, frame = vid_stream.read()
@@ -515,6 +513,7 @@ def update():
             retina.apply_para_dict(eye, eye_para_dict)
             retina.clear_buffers(eye)
     elif dis_wg.currentText() == "Image (External)":
+        exp_wg.setCurrentIndex(0)
         if vid_stream is not None:
             vid_stream.release()
             vid_stream = None
@@ -538,6 +537,7 @@ def update():
             if file_name == "":
                 frame = bg_frame
     elif dis_wg.currentText() == "Video (External)":
+        exp_wg.setCurrentIndex(0)
         if vid_stream is not None:
             vid_stream.release()
             vid_stream = None
@@ -568,23 +568,23 @@ def update():
                 if frame_idx == (frame_len-1):
                     frame_idx = 0
 
+    color_frame = frame
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     if cm_state is False:
-        # gray mode
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        parvo_frame, magno_frame = retina.get_opl_frame(eye, frame,
+        parvo_frame, magno_frame = retina.get_opl_frame(eye, gray_frame,
                                                         color_mode="gray")
-        frame = retina.gray2color(frame)
+        dis_frame = retina.gray2color(gray_frame)
     else:
-        parvo_frame, magno_frame = retina.get_opl_frame(eye, frame)
+        dis_frame = color_frame
+        parvo_frame, magno_frame = retina.get_opl_frame(eye, dis_frame)
 
-    origin_frame = gui.cv2pg(frame, frame_height, frame_wid)
+    origin_frame = gui.cv2pg(dis_frame, frame_height, frame_wid)
     parvo_frame = gui.cv2pg(parvo_frame, frame_height, frame_wid)
     magno_frame = gui.cv2pg(magno_frame, frame_height, frame_wid)
     draw_frame.setImage(origin_frame)
     draw_parvo.setImage(parvo_frame)
     draw_magno.setImage(magno_frame)
     viewer_app.processEvents()
-
 
 timer = QtCore.QTimer()
 timer.timeout.connect(update)
