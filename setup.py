@@ -38,7 +38,7 @@ setup(
 
     packages=['simretina'],
     package_data={'simretina': ['retina-data/*.*']},
-    scripts=['script/retina_viewer.py'],
+    scripts=['script/retina_viewer'],
 
     classifiers=list(filter(None, classifiers.split('\n'))),
     description='Simulation of the Retina with OpenCV.',
