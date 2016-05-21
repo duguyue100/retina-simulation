@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """A Retina Viewer powered by OpenCV GUI utilities.
 
 Author: Yuhuang Hu
