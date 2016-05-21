@@ -50,7 +50,8 @@ if option == "test-dict-compare":
     print retina.compare_para_dict(para_dict_old, para_dict_new)
 
 if option == "test-setup-function":
-    eye = retina.init_retina((300, 300))
+    eye = retina.init_retina((300, 200))
 
     print type(eye.setupOPLandIPLParvoChannel)
     print type(eye.setupIPLMagnoChannel)
+    print eye.getInputSize()

@@ -9,6 +9,11 @@ import cv2
 import numpy as np
 
 
+def get_background_frame(size):
+    """Get a background frame."""
+    return np.zeros((size[0], size[1], 3))
+
+
 def cv2pg(frame, wg_h, wg_w, bgr=True, color=[0, 0, 0]):
     """Convert a OpenCV frame to PyQtGraph frame.
 
@@ -128,6 +133,9 @@ def resize(frame, new_size, ratio_keep=False):
         elif ratio_frame < ratio_new:
             new_wid = int(frame.shape[1] *
                           (float(new_size[1])/float(frame.shape[0])))
+            new_height = new_size[1]
+        elif ratio_frame == ratio_new:
+            new_wid = new_size[0]
             new_height = new_size[1]
         return cv2.resize(frame, (new_wid, new_height),
                           interpolation=cv2.INTER_CUBIC)

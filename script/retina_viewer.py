@@ -4,6 +4,7 @@ Author: Yuhuang Hu
 Email : yuhuang.hu@uzh.ch
 """
 
+import cv2
 from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.widgets.RawImageWidget import RawImageWidget
 from pyqtgraph.widgets.FileDialog import FileDialog
@@ -19,9 +20,10 @@ frame_wid = 400
 frame_height = 300
 
 # example image
-
-lenna, size = dataset.get_lenna()
-lenna = gui.resize(lenna, (frame_wid, frame_height), ratio_keep=True)
+bg_frame = gui.get_background_frame((frame_wid, frame_height))
+bg_frame = bg_frame.astype("uint8")
+frame = bg_frame.copy()
+frames = []
 
 # init viewer application
 viewer_app = QtGui.QApplication([])
@@ -38,11 +40,11 @@ frame_wg = QtGui.QWidget()
 frame_layout = QtGui.QHBoxLayout()
 frame_wg.setLayout(frame_layout)
 draw_frame = RawImageWidget()
-draw_frame.setImage(lenna)
+draw_frame.setImage(bg_frame)
 draw_parvo = RawImageWidget()
-draw_parvo.setImage(lenna)
+draw_parvo.setImage(bg_frame)
 draw_magno = RawImageWidget()
-draw_magno.setImage(lenna)
+draw_magno.setImage(bg_frame)
 
 frame_layout.addWidget(draw_frame)
 frame_layout.addWidget(draw_parvo)
@@ -253,7 +255,7 @@ m_vcp_layout.addWidget(m_vcp_value)
 def m_vcp_value_change():
     """display value change."""
     global m_vcp_wg, m_vcp_value
-    p_gcs_value.setText(str(m_vcp_wg.value()/100.))
+    m_vcp_value.setText(str(m_vcp_wg.value()/100.))
 m_vcp_wg.valueChanged.connect(m_vcp_value_change)
 
 # Local Adapt Integration Tau
@@ -278,22 +280,44 @@ MAGNO_layout.addRow(m_laik_label, m_laik_wg)
 
 # Utility widgets
 UTIL_wg = QtGui.QWidget()
-UTIL_layout = QtGui.QGridLayout()
-UTIL_layout.setAlignment(QtCore.Qt.AlignTop)
+UTIL_layout = QtGui.QFormLayout()
+UTIL_layout.setRowWrapPolicy(QtGui.QFormLayout.DontWrapRows)
+UTIL_layout.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
+UTIL_layout.setFormAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+UTIL_layout.setLabelAlignment(QtCore.Qt.AlignLeft)
 UTIL_wg.setLayout(UTIL_layout)
+
+# Display mode: image, video, webcam
+
+dis_label = QtGui.QLabel("Operation Mode:")
+dis_wg = ComboBox(items=["Image", "Video", "Webcam"], default="Image")
+dis_wg.setFixedSize(200, 30)
+
+# Default example: lenna, dog, horse riding, taichi
+
+exp_label = QtGui.QLabel("Builtin Examples:")
+exp_wg = ComboBox(items=["None", "Lenna (Image)", "Dog (Image)",
+                         "Horse Riding (Video)", "TaiChi (Video)"],
+                  default="None")
+exp_wg.setFixedSize(200, 30)
+exp_wg_prev = exp_wg.currentText()
+
 
 # Exit button
 exit_wg = QtGui.QPushButton("Exit")
-exit_wg.setFixedSize(150, 30)
+exit_wg.setFixedSize(200, 30)
 exit_wg.setCheckable(True)
 exit_wg.clicked.connect(lambda: gui.exit_wg_state(exit_wg, viewer_app))
 
 # File chooser
 file_button = QtGui.QPushButton("Open Image/Video")
-file_button.setFixedSize(150, 30)
+file_button.setFixedSize(200, 30)
 file_button.setCheckable(True)
 file_chooser = FileDialog()
+file_chooser.setFileMode(QtGui.QFileDialog.ExistingFile)
+file_chooser.setFilter("Image files (*.jpg *.jpeg *.png *.tiff)")
 file_name = ""
+file_name_prev = ""
 
 
 def select_file():
@@ -304,8 +328,9 @@ file_button.clicked.connect(select_file)
 
 # Utitlity Layout
 
-UTIL_layout.addWidget(file_button, 0, 0)
-UTIL_layout.addWidget(exit_wg, 1, 0)
+UTIL_layout.addRow(dis_label, dis_wg)
+UTIL_layout.addRow(exp_label, exp_wg)
+UTIL_layout.addRow(file_button, exit_wg)
 
 # set layout
 manual_wg = QtGui.QWidget()
@@ -319,7 +344,7 @@ viewer_layout.addWidget(frame_wg, 0, 0)
 viewer_layout.addWidget(manual_wg, 1, 0)
 
 # setup retina
-eye = retina.init_retina(lenna.shape[:2])
+eye = retina.init_retina(bg_frame.shape[:2])
 
 # get parameter collection
 
@@ -367,11 +392,16 @@ retina.clear_buffers(eye)
 
 # TODO: make parameter collection
 # TODO: compare difference of the collection while refreshing
+frame_idx = 0
+frame_len = 0
+vid_stream = None
 
 
 def update():
     """Update viewer status."""
-    global eye_para_dict_old, eye_para_dict
+    global eye_para_dict_old, eye_para_dict, file_name, \
+        exp_wg_prev, file_name_prev, eye, frame, frames, \
+        frame_idx, frame_len, vid_stream
     # capture current states
     cm_state = gui.color_mode_option(cm_wg)
     p_no_state = gui.no_state(p_no_yes, p_no_no)
@@ -417,11 +447,74 @@ def update():
         retina.apply_para_dict(eye, eye_para_dict)
         retina.clear_buffers(eye)
 
-    parvo_frame, magno_frame = retina.get_opl_frame(eye, lenna)
-    lenna_frame = gui.cv2pg(lenna, frame_height, frame_wid)
+    if dis_wg.currentText() == "Image":
+        exp_wg_curr = exp_wg.currentText()
+        if exp_wg_curr != exp_wg_prev:
+            # if example sequence is changed
+            # then read new frame and set external frame as empty
+            if exp_wg_curr != "None":
+                # if current example is not empty
+                if exp_wg_curr == "Lenna (Image)":
+                    frame = dataset.get_lenna(size=False)
+                elif exp_wg_curr == "Dog (Image)":
+                    frame = dataset.get_dog(size=False)
+
+                # redefine eye
+                frame = gui.resize(frame, (frame_wid, frame_height),
+                                   ratio_keep=True)
+                eye = retina.init_retina(frame.shape[:2])
+                retina.apply_para_dict(eye, eye_para_dict)
+                retina.clear_buffers(eye)
+            exp_wg_prev = exp_wg_curr
+        elif exp_wg_curr == exp_wg_prev:
+            if exp_wg_curr == "None":
+                frame = bg_frame
+    elif dis_wg.currentText() == "Video":
+        exp_wg_curr = exp_wg.currentText()
+        if exp_wg_curr != exp_wg_prev:
+            if exp_wg_curr == "Horse Riding (Video)":
+                t_frames = dataset.get_horse_riding(size=False)
+            elif exp_wg_curr == "TaiChi (Video)":
+                t_frames = dataset.get_taichi(size=False)
+
+            # redefine eye
+            frames = []
+            for frame in t_frames:
+                frames.append(gui.resize(frame, (frame_wid, frame_height),
+                                         ratio_keep=True))
+            eye = retina.init_retina(frames[0].shape[:2])
+            retina.apply_para_dict(eye, eye_para_dict)
+            retina.clear_buffers(eye)
+            frame = frames[0]
+            frame_idx = 0
+            frame_len = len(frames)
+            exp_wg_prev = exp_wg_curr
+        elif exp_wg_curr == exp_wg_prev:
+            if exp_wg_curr == "None":
+                frame = bg_frame
+            else:
+                frame = frames[frame_idx]
+                frame_idx += 1
+                if frame_idx == (frame_len-1):
+                    frame_idx = 0
+    elif dis_wg.currentText() == "Webcam":
+        if vid_stream is None:
+            vid_stream = cv2.VideoCapture(0)
+        _, frame = vid_stream.read()
+        frame = gui.resize(frame, (frame_wid, frame_height),
+                           ratio_keep=True)
+        eye_size = eye.getInputSize()
+        if eye_size[0] != frame.shape[1] or eye_size[1] != frame.shape[0]:
+            eye = retina.init_retina(frame.shape[:2])
+            retina.apply_para_dict(eye, eye_para_dict)
+            retina.clear_buffers(eye)
+    #     continue
+
+    parvo_frame, magno_frame = retina.get_opl_frame(eye, frame)
+    origin_frame = gui.cv2pg(frame, frame_height, frame_wid)
     parvo_frame = gui.cv2pg(parvo_frame, frame_height, frame_wid)
     magno_frame = gui.cv2pg(magno_frame, frame_height, frame_wid)
-    draw_frame.setImage(lenna_frame)
+    draw_frame.setImage(origin_frame)
     draw_parvo.setImage(parvo_frame)
     draw_magno.setImage(magno_frame)
     viewer_app.processEvents()
