@@ -43,7 +43,7 @@ def get_opl_frame(retina, frame, get_parvo=True, get_magno=True,
     get_magno : bool
         return magno frames if True, otherwise False
     color_mode : string
-        indicate color mode, the options are "color", "grey"
+        indicate color mode, the options are "color", "gray"
 
     Returns
     -------
@@ -57,10 +57,10 @@ def get_opl_frame(retina, frame, get_parvo=True, get_magno=True,
     parvo_frame = retina.getParvo()
     magno_frame = retina.getMagno()
 
-    if color_mode == "grey":
-        parvo_frame = grey2color(parvo_frame)
+    if color_mode == "gray":
+        parvo_frame = gray2color(parvo_frame)
 
-    magno_frame = grey2color(magno_frame)
+    magno_frame = gray2color(magno_frame)
 
     if get_parvo is False and get_magno is True:
         return magno_frame
@@ -70,13 +70,13 @@ def get_opl_frame(retina, frame, get_parvo=True, get_magno=True,
         return parvo_frame, magno_frame
 
 
-def grey2color(frame):
-    """Transform a grey frame to color frame by duplication.
+def gray2color(frame):
+    """Transform a gray frame to color frame by duplication.
 
     Parameters
     ----------
     frame : numpy.ndarray
-        a grey frame
+        a gray frame
 
     Returns
     -------
@@ -84,7 +84,7 @@ def grey2color(frame):
         a color frame by duplicating the frame to each color channel.
     """
     if frame.ndim != 2:
-        raise ValueError("Input frame is not a grey frame.")
+        raise ValueError("Input frame is not a gray frame.")
 
     return np.transpose(np.tile(frame, (3, 1, 1)), (1, 2, 0))
 

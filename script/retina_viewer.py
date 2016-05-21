@@ -390,8 +390,6 @@ eye_para_dict_old = eye_para_dict
 retina.apply_para_dict(eye, eye_para_dict)
 retina.clear_buffers(eye)
 
-# TODO: make parameter collection
-# TODO: compare difference of the collection while refreshing
 frame_idx = 0
 frame_len = 0
 vid_stream = None
@@ -508,9 +506,16 @@ def update():
             eye = retina.init_retina(frame.shape[:2])
             retina.apply_para_dict(eye, eye_para_dict)
             retina.clear_buffers(eye)
-    #     continue
 
-    parvo_frame, magno_frame = retina.get_opl_frame(eye, frame)
+    if cm_state is False:
+        # gray mode
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        parvo_frame, magno_frame = retina.get_opl_frame(eye, frame,
+                                                        color_mode="gray")
+        frame = retina.gray2color(frame)
+    else:
+        parvo_frame, magno_frame = retina.get_opl_frame(eye, frame)
+
     origin_frame = gui.cv2pg(frame, frame_height, frame_wid)
     parvo_frame = gui.cv2pg(parvo_frame, frame_height, frame_wid)
     magno_frame = gui.cv2pg(magno_frame, frame_height, frame_wid)
