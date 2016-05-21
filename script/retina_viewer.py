@@ -291,7 +291,8 @@ UTIL_wg.setLayout(UTIL_layout)
 # Display mode: image, video, webcam
 
 dis_label = QtGui.QLabel("Operation Mode:")
-dis_wg = ComboBox(items=["Image", "Video", "Webcam"], default="Image")
+dis_wg = ComboBox(items=["Image", "Image (External)", "Video",
+                         "Video (External)", "Webcam"], default="Image")
 dis_wg.setFixedSize(200, 30)
 
 # Default example: lenna, dog, horse riding, taichi
@@ -447,6 +448,9 @@ def update():
         retina.clear_buffers(eye)
 
     if dis_wg.currentText() == "Image":
+        if vid_stream is not None:
+            vid_stream.release()
+            vid_stream = None
         exp_wg_curr = exp_wg.currentText()
         if exp_wg_curr != exp_wg_prev:
             # if example sequence is changed
@@ -469,6 +473,9 @@ def update():
             if exp_wg_curr == "None":
                 frame = bg_frame
     elif dis_wg.currentText() == "Video":
+        if vid_stream is not None:
+            vid_stream.release()
+            vid_stream = None
         exp_wg_curr = exp_wg.currentText()
         if exp_wg_curr != exp_wg_prev:
             if exp_wg_curr == "Horse Riding (Video)":
@@ -507,6 +514,59 @@ def update():
             eye = retina.init_retina(frame.shape[:2])
             retina.apply_para_dict(eye, eye_para_dict)
             retina.clear_buffers(eye)
+    elif dis_wg.currentText() == "Image (External)":
+        if vid_stream is not None:
+            vid_stream.release()
+            vid_stream = None
+        if file_name != file_name_prev:
+            if file_name != "":
+                if dataset.check_image_file(str(file_name)):
+                    frame = cv2.imread(str(file_name))
+                else:
+                    frame = bg_frame
+            elif file_name == "":
+                frame = bg_frame
+
+            frame = gui.resize(frame, (frame_wid, frame_height),
+                               ratio_keep=True)
+            eye = retina.init_retina(frame.shape[:2])
+            retina.apply_para_dict(eye, eye_para_dict)
+            retina.clear_buffers(eye)
+
+            file_name_prev = file_name
+        elif file_name == file_name_prev:
+            if file_name == "":
+                frame = bg_frame
+    elif dis_wg.currentText() == "Video (External)":
+        if vid_stream is not None:
+            vid_stream.release()
+            vid_stream = None
+        if file_name != file_name_prev:
+            if file_name != "":
+                if dataset.check_video_file(str(file_name)):
+                    t_frames = dataset.get_video(str(file_name), size=False)
+                else:
+                    t_frames = [bg_frame]
+
+            frames = []
+            for frame in t_frames:
+                frames.append(gui.resize(frame, (frame_wid, frame_height),
+                                         ratio_keep=True))
+            eye = retina.init_retina(frames[0].shape[:2])
+            retina.apply_para_dict(eye, eye_para_dict)
+            retina.clear_buffers(eye)
+            frame = frames[0]
+            frame_idx = 0
+            frame_len = len(frames)
+            file_name_prev = file_name
+        elif file_name == file_name_prev:
+            if file_name == "":
+                frame = bg_frame
+            else:
+                frame = frames[frame_idx]
+                frame_idx += 1
+                if frame_idx == (frame_len-1):
+                    frame_idx = 0
 
     if cm_state is False:
         # gray mode

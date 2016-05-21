@@ -13,6 +13,53 @@ import av
 from simretina import package_data_path
 
 
+def check_image_file(file_name):
+    """Check if given file is a image file.
+
+    Parameters
+    ----------
+    file_name : string
+        a given file path (absolute path)
+
+    Returns
+    -------
+    status : bool
+        True if it's a image file, False if it isn't
+    """
+    if not os.path.isfile(file_name):
+        raise ValueError("The given file is not existed!")
+
+    fn, fex = os.path.splitext(file_name)
+    if fex not in [".jpg", ".jpe", ".jpeg", ".jp2", ".png", ".bmp", ".dib",
+                   ".pbm", ".pgm", ".ppm", ".sr", ".ras", ".tiff", ".tif"]:
+        return False
+    else:
+        return True
+
+
+def check_video_file(file_name):
+    """Check if given file is a video file.
+
+    Parameters
+    ----------
+    file_name : string
+        a given file path (absolute path)
+
+    Returns
+    -------
+    status : bool
+        True if it's a video file, False if it isn't
+    """
+    if not os.path.isfile(file_name):
+        raise ValueError("The given file is not existed!")
+
+    fn, fex = os.path.splitext(file_name)
+    if fex not in [".avi", ".mp4"]:
+        return False
+    else:
+        return True
+
+
 def get_image(image_path, color=True, size=True):
     """Get image by given image path.
 

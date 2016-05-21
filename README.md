@@ -15,7 +15,8 @@ Detailed software setup can be found from [WIKI](https://github.com/duguyue100/r
 - [x] First release of GUI by `PyQtGraph` [2016-05-21]
 - [x] Webcam support for the package [2016-05-21]
 - [x] Command line support for viewer [2016-05-21]
-- [ ] External file support
+- [x] External file support [2016-05-21]
+- [ ] Redesign GUI to add fast tone transformation
 - [ ] `unittest`-based tests
 - [ ] Travis-CI integration
 
