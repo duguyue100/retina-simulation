@@ -1,0 +1,40 @@
+sudo: false
+cache:
+  directories:
+    - $HOME/download
+    - $HOME/.cache/pip
+
+language: python
+python:
+    - "2.7"
+
+before_install:
+    - mkdir -p download
+    - cd download
+    - wget -c http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - ./miniconda.sh -b
+    - cd ..
+    - export PATH=/home/travis/miniconda2/bin:$PATH
+    - conda update --yes conda
+    - conda install --yes conda=3.19
+    - conda install --yes pip
+    - conda install --yes -c soft-matter ffmpeg=2.2.4
+    - conda install --yes -c soft-matter pyav=v0.2.3.post0
+    - conda install --yes -c menpo opencv=2.4.11
+    - conda install --yes pyqtgraph
+    - conda install --yes nose
+
+install:
+    - pip install -r requirements.txt
+
+script:
+    - python --version
+    - nosetests
+
+branches:
+  only:
+    - master
+
+notifications:
+  email: false
