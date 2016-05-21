@@ -22,8 +22,8 @@ before_install:
     - ./miniconda.sh -b -p $HOME/miniconda
     - cd ..
     - export PATH=/home/travis/miniconda/bin:$PATH
-    - conda config --set always_yes yes --set changeps1 no
-    - conda update --q conda
+    - conda info -a
+    - conda update --yes conda
     - conda install --yes pip
     - conda install --yes -c soft-matter ffmpeg=2.2.4
     - conda install --yes -c soft-matter pyav=v0.2.3.post0
