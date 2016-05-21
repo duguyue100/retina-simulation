@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 
 
-def cv2pg(frame, wg_h, wg_w, bgr=True, color=[255, 0, 0]):
+def cv2pg(frame, wg_h, wg_w, bgr=True, color=[0, 0, 0]):
     """Convert a OpenCV frame to PyQtGraph frame.
 
     Parameters
@@ -54,7 +54,7 @@ def make_pg_frame(frame):
     return np.transpose(frame, axes=(1, 0, 2))
 
 
-def fit_frame(frame, wg_h, wg_w, color=[255, 0, 0]):
+def fit_frame(frame, wg_h, wg_w, color=[0, 0, 0]):
     """Fit to size of frame widget.
 
     Parameters
@@ -101,7 +101,7 @@ def fit_frame(frame, wg_h, wg_w, color=[255, 0, 0]):
     return new_frame
 
 
-def resize(frame, new_size):
+def resize(frame, new_size, ratio_keep=False):
     """Wrap OpenCV frame resize function.
 
     Parameters
@@ -116,7 +116,21 @@ def resize(frame, new_size):
     new_frame : numpy.ndarray
         resized frame
     """
-    return cv2.resize(frame, new_size, interpolation=cv2.INTER_CUBIC)
+    if ratio_keep is False:
+        return cv2.resize(frame, new_size, interpolation=cv2.INTER_CUBIC)
+    elif ratio_keep is True:
+        ratio_frame = float(frame.shape[1])/float(frame.shape[0])
+        ratio_new = float(new_size[0])/float(new_size[1])
+        if ratio_frame > ratio_new:
+            new_wid = new_size[0]
+            new_height = int(frame.shape[0] *
+                             (float(new_size[0])/float(frame.shape[1])))
+        elif ratio_frame < ratio_new:
+            new_wid = int(frame.shape[1] *
+                          (float(new_size[1])/float(frame.shape[0])))
+            new_height = new_size[1]
+        return cv2.resize(frame, (new_wid, new_height),
+                          interpolation=cv2.INTER_CUBIC)
 
 
 def bgr2rgb(frame):

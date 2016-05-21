@@ -9,7 +9,7 @@ from cv2 import bioinspired
 
 from simretina import dataset, gui
 
-option = "test-bgr2rgb-sequence"
+option = "test-ratio-keep-resize"
 
 if option == "test-builtin-image":
     # testing for builtin dataset
@@ -38,3 +38,8 @@ if option == "test-bgr2rgb-sequence":
         cv2.waitKey(delay=0)
 
     print len(new_frames)
+
+if option == "test-ratio-keep-resize":
+    frame, size = dataset.get_lenna()
+    frame = gui.resize(frame, (400, 300), ratio_keep=True)
+    print frame.shape
