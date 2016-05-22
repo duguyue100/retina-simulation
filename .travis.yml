@@ -26,7 +26,11 @@ before_install:
     - conda install --yes pip
     - conda install --yes pillow
     - conda install --yes -c soft-matter ffmpeg=2.2.4
-    - conda install --yes -c soft-matter pyav
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+        conda install --yes -c soft-matter pyav
+      else
+        conda install -c danielballan pyav=v0.2.3.post0
+      fi
     - conda install --yes -c menpo opencv3
     - conda install --yes pyqtgraph
     - conda install --yes nose
