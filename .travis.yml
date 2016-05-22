@@ -7,7 +7,7 @@ cache:
 language: python
 python:
     - "2.7"
-    - "3.5"
+    - "3.4"
 
 before_install:
     - mkdir -p download
@@ -26,7 +26,6 @@ before_install:
     - conda install --yes pip
     - conda install --yes pillow
     - conda install --yes -c soft-matter ffmpeg=2.2.4
-    - conda install --yes -c danielballan pyav
     - conda install --yes -c menpo opencv3
     - conda install --yes pyqtgraph
     - conda install --yes nose

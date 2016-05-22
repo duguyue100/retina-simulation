@@ -6,9 +6,8 @@ Email : yuhuang.hu@uzh.ch
 
 import os
 from os.path import join
-import numpy as np
 import cv2
-import av
+from moviepy.video.io.ffmpeg_reader import FFMPEG_VideoReader
 
 from simretina import package_data_path
 
@@ -113,17 +112,15 @@ def get_video(vid_path, color=True, size=True):
     size : tuple
         size of the frame (optional).
     """
-    container = av.open(vid_path)
-    video = next(s for s in container.streams if s.type == b'video')
+    vid_container = FFMPEG_VideoReader(vid_path)
 
     frames = []
-    for packet in container.demux(video):
-        for frame in packet.decode():
-            frame_t = np.array(frame.to_image())
-            frame_t = cv2.cvtColor(frame_t, cv2.COLOR_RGB2BGR)
-            if color is False:
-                frame_t = cv2.cvtColor(frame_t, cv2.COLOR_BGR2GRAY)
-            frames.append(frame_t)
+    for i in xrange(vid_container.nframes):
+        frame_t = vid_container.read_frame()
+        frame_t = cv2.cvtColor(frame_t, cv2.COLOR_RGB2BGR)
+        if color is False:
+            frame_t = cv2.cvtColor(frame_t, cv2.COLOR_BGR2GRAY)
+        frames.append(frame_t)
 
     if size is True:
         return frames, frames[0].shape

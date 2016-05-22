@@ -5,10 +5,11 @@ Email : yuhuang.hu@uzh.ch
 """
 
 import cv2
+from moviepy.video.io.ffmpeg_reader import FFMPEG_VideoReader
 
 from simretina import dataset, gui, retina
 
-option = "test-setup-function"
+option = "test-movie-py"
 
 if option == "test-builtin-image":
     # testing for builtin dataset
@@ -55,3 +56,13 @@ if option == "test-setup-function":
     print type(eye.setupOPLandIPLParvoChannel)
     print type(eye.setupIPLMagnoChannel)
     print eye.getInputSize()
+
+if option == "test-movie-py":
+    video = FFMPEG_VideoReader("./simretina/retina-data/HorseRiding.avi")
+
+    frame = video.read_frame()
+
+    for i in xrange(video.nframes):
+        frame = video.read_frame()
+        cv2.imshow("test", frame)
+        cv2.waitKey(0)

@@ -4,7 +4,6 @@ Author: Yuhuang Hu
 Email : yuhuang.hu@uzh.ch
 """
 
-import cv2
 import numpy as np
 from cv2 import bioinspired
 
