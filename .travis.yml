@@ -9,10 +9,6 @@ python:
     - "2.7"
     - "3.4"
 
-os:
-    - linux
-    - osx
-
 before_install:
     - mkdir -p download
     - cd download
