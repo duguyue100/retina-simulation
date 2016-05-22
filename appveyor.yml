@@ -1,0 +1,29 @@
+environment:
+    matrix:
+        - PYTHON_VERSION: "2.7"
+        - PYTHON_VERSION: "3.4"
+
+platform:
+    - x86
+    - x64
+
+matrix:
+    fast_finish: true
+
+install:
+    - set PATH=C:\Miniconda\Scripts
+    - ps: If ($env:Platform -Match "x64") {$env:PATH="C:\Miniconda-x64\Scripts"}
+    - conda info -a
+    - conda update --yes conda
+    - conda install --yes pip
+    - conda install --yes pillow
+    - conda install --yes -c menpo ffmpeg=2.7.0
+    - conda install --yes -c menpo opencv3
+    - conda install --yes pyqtgraph
+    - conda install --yes nose
+    - python.exe setup.py install
+
+build: off
+
+test_script:
+    - nosetests tests/
