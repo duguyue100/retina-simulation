@@ -20,6 +20,7 @@ Detailed software setup can be found from [WIKI](https://github.com/duguyue100/r
 - [ ] Redesign GUI to add fast tone transformation
 - [ ] `unittest`-based tests
 - [x] Travis-CI integration [2016-05-21]
+- [x] Replace `PyAV` to `moviepy` for better compatibility.
 
 ## Requirements
 
@@ -28,11 +29,15 @@ unnecessary messes.__
 
 + OpenCV3: `conda install -c menpo opencv3=3.1.0` (for image and video processing)
 + FFMPEG: `conda install -c soft-matter ffmpeg=2.2.4` (for supporting video analysis)
-+ PyAV: `conda install -c soft-matter pyav` (for reading videos)
 + PyQtGraph: `conda install pyqtgraph` (for GUI viewer)
 
 Note that above requirements are installed with `conda` - the package management system
 provided along with `Anaconda`. Make sure you installed them before installing the package
+
+Following packages are listed in `requirements.txt`, they will be installed automatically:
+
++ `numpy` (for numerical computing)
++ `moviepy` (for read videos)
 
 ## Installation
 
