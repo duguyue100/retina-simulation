@@ -24,7 +24,9 @@ install:
     - conda install --yes -c menpo opencv3
     - conda install --yes pyqtgraph
     - conda install --yes nose
+    - pip install -r requirements.txt
     - python.exe setup.py install
+    - conda list
 
 build: off
 
