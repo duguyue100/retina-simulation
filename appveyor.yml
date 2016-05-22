@@ -14,7 +14,10 @@ install:
     - set PATH=C:\Miniconda\Scripts
     - ps: If ($env:Platform -Match "x64") {$env:PATH="C:\Miniconda-x64\Scripts"}
     - conda info -a
+    - conda config --set always_yes yes --set changeps1 no
     - conda update --yes conda
+    - conda create -q --name python%PYTHON_VERSION% python=%PYTHON_VERSION%
+    - activate python%PYTHON_VERSION%
     - conda install --yes pip
     - conda install --yes pillow
     - conda install --yes -c menpo ffmpeg=2.7.0
