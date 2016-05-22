@@ -24,6 +24,7 @@ before_install:
     - conda info -a
     - conda update --yes conda
     - conda install --yes pip
+    - conda install --yes pillow
     - conda install --yes -c soft-matter ffmpeg=2.2.4
     - conda install --yes -c soft-matter pyav
     - conda install --yes -c menpo opencv3
