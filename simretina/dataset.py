@@ -115,7 +115,7 @@ def get_video(vid_path, color=True, size=True):
     vid_container = FFMPEG_VideoReader(vid_path)
 
     frames = []
-    for i in xrange(vid_container.nframes):
+    for i in range(vid_container.nframes):
         frame_t = vid_container.read_frame()
         frame_t = cv2.cvtColor(frame_t, cv2.COLOR_RGB2BGR)
         if color is False:

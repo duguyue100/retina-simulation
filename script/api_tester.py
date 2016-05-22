@@ -62,7 +62,7 @@ if option == "test-movie-py":
 
     frame = video.read_frame()
 
-    for i in xrange(video.nframes):
+    for i in range(video.nframes):
         frame = video.read_frame()
         cv2.imshow("test", frame)
         cv2.waitKey(0)
