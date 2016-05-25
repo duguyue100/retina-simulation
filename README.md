@@ -56,7 +56,7 @@ pip install git+git://github.com/duguyue100/retina-simulation.git \
 ## Start Retina Simulation Viewer
 
 __CAUTION: WE FOUND THAT THE VIEWER MAY CRASH RANDOMLY WHILE YOU ARE SWITCHING THE MODE.
-WE ARE STILL TESTING THE PROBLEM, BEFORE THAT, YOU CAN SIMPLY RESTART THE VIEWER.__
+WE ARE STILL TESTING THE PROGRAM, BEFORE WE SOLVED IT, YOU CAN SIMPLY RESTART THE VIEWER.__
 
 After you successfully installed the package, you are able to start the
 retina viewer from terminal:
