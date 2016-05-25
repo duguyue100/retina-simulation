@@ -31,7 +31,7 @@ __We highly recommend installing [Anaconda](https://anaconda.org/) as your defau
 unnecessary messes.__
 
 + OpenCV3: `conda install -c menpo opencv3=3.1.0` (for image and video processing)
-+ FFMPEG: `conda install -c soft-matter ffmpeg=2.2.4` (for supporting video analysis)
++ (OPTIONAL) FFMPEG: `conda install -c soft-matter ffmpeg=2.2.4` (for supporting video analysis) (optional: `moviepy` will download FFMPEG at the first time, but you should install it if you need it for other projects.)
 + PyQtGraph: `conda install pyqtgraph` (for GUI viewer)
 
 Note that above requirements are installed with `conda` - the package management system
@@ -49,13 +49,14 @@ __Assumed you've installed above requirements__
 Get the bleeding edge by:
 
 ```
-pip install git+git://github.com/duguyue100/retina-simulation.git
+pip install git+git://github.com/duguyue100/retina-simulation.git \
+-r https://raw.githubusercontent.com/duguyue100/retina-simulation/master/requirements.txt
 ```
 
 ## Start Retina Simulation Viewer
 
-__Caution: This feature may not work with Windows platform where the
-path feature is not defined in `/usr/bin/env` as *nix platforms.__
+__CAUTION: WE FOUND THAT THE VIEWER MAY CRASH RANDOMLY WHILE YOU ARE SWITCHING THE MODE.
+WE ARE STILL TESTING THE PROBLEM, BEFORE THAT, YOU CAN SIMPLY RESTART THE VIEWER.__
 
 After you successfully installed the package, you are able to start the
 retina viewer from terminal:
@@ -65,7 +66,15 @@ retina_viewer.py
 ```
 
 Note that above file is automatically added in your system path once
-you installed the package.
+you installed the package. (Yes, with the extension)
+
+If you didn't install FFMPEG, at the first time, `moviepy` will download FFMPEG
+for you.
+
+__FOR WINDOWS USER:__ If you type above command, your system either start the viewer
+right away or it will ask for the program that open the file, you should then find and choose
+`python.exe` from your Anaconda installation. If it's not responding, you may want to
+open a new console and type above command again. If it doesn't work, please submit an [issue](https://github.com/duguyue100/retina-simulation/issues).
 
 ## Contacts
 
