@@ -72,9 +72,9 @@ If you didn't install FFMPEG, at the first time, `moviepy` will download FFMPEG
 for you.
 
 __FOR WINDOWS USER:__ If you type above command, your system either start the viewer
-right away or it will ask for the program that open the file, you should then find and choose
+right away or it will ask for the program that opens the file, you should then find and choose
 `python.exe` from your Anaconda installation. If it's not responding, you may want to
-open a new console and type above command again. If it doesn't work, please submit an [issue](https://github.com/duguyue100/retina-simulation/issues).
+open a new console and type above command again. If it still doesn't work, please submit an [issue](https://github.com/duguyue100/retina-simulation/issues).
 
 ## Contacts
 
