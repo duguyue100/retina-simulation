@@ -44,6 +44,5 @@ setup(
     scripts=["script/retina_viewer.py"],
 
     classifiers=list(filter(None, classifiers.split('\n'))),
-    description="Simulation of the Retina with OpenCV.",
-    long_description=open("README.md").read()
+    description="Simulation of the Retina with OpenCV."
 )
