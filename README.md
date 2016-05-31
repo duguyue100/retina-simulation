@@ -46,6 +46,12 @@ Following packages are listed in `requirements.txt`, they will be installed auto
 
 __Assumed you've installed above requirements__
 
+Get the stable release by:
+
+```
+pip install simretina
+```
+
 Get the bleeding edge by:
 
 ```
