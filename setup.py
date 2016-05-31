@@ -29,18 +29,19 @@ except ImportError:
 
 setup(
     name='simretina',
-    version=about['__version__'],
+    version=about["__version__"],
 
-    author=about['__author__'],
-    author_email=about['__author_email__'],
+    author=about["__author__"],
+    author_email=about["__author_email__"],
 
-    url=about['__url__'],
+    url=about["__url__"],
+    download_url=about["__download_url__"],
 
-    packages=['simretina'],
-    package_data={'simretina': ['retina-data/*.*']},
-    scripts=['script/retina_viewer.py'],
+    packages=["simretina"],
+    package_data={"simretina": ["retina-data/*.*"]},
+    scripts=["script/retina_viewer.py"],
 
     classifiers=list(filter(None, classifiers.split('\n'))),
-    description='Simulation of the Retina with OpenCV.',
-    long_description=open('README.md').read()
+    description="Simulation of the Retina with OpenCV.",
+    long_description=open("README.md").read()
 )
