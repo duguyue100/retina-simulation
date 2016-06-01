@@ -1,5 +1,8 @@
 # Simulation of the Retina with OpenCV
 
+[![PyPI](https://img.shields.io/pypi/v/simretina.svg?maxAge=2592000)](https://pypi.python.org/pypi/simretina)
+[![PyPI](https://img.shields.io/pypi/pyversions/simretina.svg?maxAge=2592000)](https://pypi.python.org/pypi/simretina)
+
 [![Build Status](https://travis-ci.org/duguyue100/retina-simulation.svg?branch=master)](https://travis-ci.org/duguyue100/retina-simulation)
 [![Build status](https://ci.appveyor.com/api/projects/status/s1qiaajjraq6t2i0/branch/master?svg=true)](https://ci.appveyor.com/project/duguyue100/retina-simulation/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ffa7d1cf03e74bb2adfe60b91fb7479b)](https://www.codacy.com/app/duguyue100/retina-simulation?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=duguyue100/retina-simulation&amp;utm_campaign=Badge_Grade)
