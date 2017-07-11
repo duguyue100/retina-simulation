@@ -315,7 +315,7 @@ file_button.setFixedSize(200, 30)
 file_button.setCheckable(True)
 file_chooser = FileDialog()
 file_chooser.setFileMode(QtGui.QFileDialog.ExistingFile)
-file_chooser.setFilter("Image files (*.jpg *.jpeg *.png *.tiff)")
+file_chooser.selectNameFilter("Image files (*.jpg *.jpeg *.png *.tiff)")
 file_name = ""
 file_name_prev = ""
 
